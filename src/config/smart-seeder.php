@@ -1,9 +1,9 @@
 <?php
 
-return array(
+return [
     /**
      * DO NOT CHANGE THIS unless you also change the included migration, since this references the actual table in your database
      */
     'seedTable' => 'seeds',
-    'seedDir' => 'smartSeeds',
-);
+    'seedDir'   => 'smartSeeds',
+];

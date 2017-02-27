@@ -2,10 +2,14 @@
 
 namespace spec\Jlapp\SmartSeeder;
 
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Illuminate\Database\ConnectionResolverInterface;
+use PhpSpec\ObjectBehavior;
 
+/**
+ * Class SmartSeederRepositorySpec
+ *
+ * @package spec\Jlapp\SmartSeeder
+ */
 class SmartSeederRepositorySpec extends ObjectBehavior
 {
     /** @var string */

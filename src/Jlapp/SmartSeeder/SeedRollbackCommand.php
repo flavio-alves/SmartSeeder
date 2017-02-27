@@ -1,21 +1,19 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Jordan
- * Date: 2014-11-07
- * Time: 1:46 PM
- */
 
 namespace Jlapp\SmartSeeder;
 
+use File;
 use Illuminate\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
 use Symfony\Component\Console\Input\InputOption;
 
-use File;
-
-class SeedRollbackCommand extends Command {
-
+/**
+ * Class SeedRollbackCommand
+ *
+ * @package Jlapp\SmartSeeder
+ */
+class SeedRollbackCommand extends Command
+{
     use ConfirmableTrait;
 
     /**
@@ -25,6 +23,9 @@ class SeedRollbackCommand extends Command {
      */
     protected $name = 'seed:rollback';
 
+    /**
+     * @var SeedMigrator
+     */
     private $migrator;
 
     /**
@@ -34,11 +35,18 @@ class SeedRollbackCommand extends Command {
      */
     protected $description = 'Rollback all database seeding';
 
-
-    public function __construct(SeedMigrator $migrator) {
+    /**
+     * SeedRollbackCommand constructor.
+     *
+     * @param SeedMigrator $migrator
+     */
+    public function __construct(SeedMigrator $migrator)
+    {
         parent::__construct();
+
         $this->migrator = $migrator;
     }
+
     /**
      * Execute the console command.
      *
@@ -46,7 +54,9 @@ class SeedRollbackCommand extends Command {
      */
     public function fire()
     {
-        if ( ! $this->confirmToProceed()) return;
+        if ( ! $this->confirmToProceed()) {
+            return;
+        }
 
         $this->migrator->setConnection($this->input->getOption('database'));
 
@@ -62,8 +72,7 @@ class SeedRollbackCommand extends Command {
         // Once the migrator has run we will grab the note output and send it out to
         // the console screen, since the migrator itself functions without having
         // any instances of the OutputInterface contract passed into the class.
-        foreach ($this->migrator->getNotes() as $note)
-        {
+        foreach ($this->migrator->getNotes() as $note) {
             $this->output->writeln($note);
         }
     }
@@ -88,11 +97,14 @@ class SeedRollbackCommand extends Command {
      */
     protected function getOptions()
     {
-        return array(
-            array('env', null, InputOption::VALUE_OPTIONAL, 'The environment in which to run the seeds.', null),
-            array('database', null, InputOption::VALUE_OPTIONAL, 'The database connection to use.'),
-            array('pretend', null, InputOption::VALUE_NONE, 'Dump the SQL queries that would be run.'),
-            array('force', null, InputOption::VALUE_NONE, 'Force the operation to run when in production.'),
-        );
+        return [
+            ['env', null, InputOption::VALUE_OPTIONAL, 'The environment in which to run the seeds.', null],
+
+            ['database', null, InputOption::VALUE_OPTIONAL, 'The database connection to use.'],
+
+            ['pretend', null, InputOption::VALUE_NONE, 'Dump the SQL queries that would be run.'],
+
+            ['force', null, InputOption::VALUE_NONE, 'Force the operation to run when in production.'],
+        ];
     }
 }

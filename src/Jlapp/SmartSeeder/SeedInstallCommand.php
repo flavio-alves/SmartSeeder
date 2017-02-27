@@ -1,18 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Jordan
- * Date: 2014-11-07
- * Time: 1:46 PM
- */
 
 namespace Jlapp\SmartSeeder;
 
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
-use Illuminate\Support\Facades\App;
 
-class SeedInstallCommand extends Command {
+/**
+ * Class SeedInstallCommand
+ *
+ * @package Jlapp\SmartSeeder
+ */
+class SeedInstallCommand extends Command
+{
     /**
      * The console command name.
      *
@@ -34,11 +33,18 @@ class SeedInstallCommand extends Command {
      */
     protected $repository;
 
-
-    public function __construct(SmartSeederRepository $repository) {
+    /**
+     * SeedInstallCommand constructor.
+     *
+     * @param SmartSeederRepository $repository
+     */
+    public function __construct(SmartSeederRepository $repository)
+    {
         parent::__construct();
+
         $this->repository = $repository;
     }
+
     /**
      * Execute the console command.
      *
@@ -60,8 +66,8 @@ class SeedInstallCommand extends Command {
      */
     protected function getOptions()
     {
-        return array(
-            array('database', null, InputOption::VALUE_OPTIONAL, 'The database connection to use.'),
-        );
+        return [
+            ['database', null, InputOption::VALUE_OPTIONAL, 'The database connection to use.'],
+        ];
     }
 }

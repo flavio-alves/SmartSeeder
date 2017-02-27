@@ -1,8 +1,13 @@
-<?php {{namespace}}
+<?php
+
+{{namespace}}
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class {{model}}
+ */
 class {{model}} extends Seeder {
 
     /**
@@ -23,6 +28,7 @@ class {{model}} extends Seeder {
     public function down()
     {
         Model::unguard();
+
         {{class}}::truncate();
     }
 

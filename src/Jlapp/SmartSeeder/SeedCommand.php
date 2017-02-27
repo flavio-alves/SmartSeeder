@@ -1,13 +1,16 @@
 <?php namespace Jlapp\SmartSeeder;
 
 use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Illuminate\Support\Facades\App;
 use Illuminate\Console\ConfirmableTrait;
-use Illuminate\Support\Facades\Config;
+use Symfony\Component\Console\Input\InputOption;
 
-class SeedCommand extends Command {
-
+/**
+ * Class SeedCommand
+ *
+ * @package Jlapp\SmartSeeder
+ */
+class SeedCommand extends Command
+{
     use ConfirmableTrait;
     /**
      * The console command name.
@@ -25,11 +28,18 @@ class SeedCommand extends Command {
      */
     protected $description = 'Seeds the database';
 
-
-    public function __construct(SeedMigrator $migrator) {
+    /**
+     * SeedCommand constructor.
+     *
+     * @param SeedMigrator $migrator
+     */
+    public function __construct(SeedMigrator $migrator)
+    {
         parent::__construct();
+
         $this->migrator = $migrator;
     }
+
     /**
      * Execute the console command.
      *
@@ -37,7 +47,9 @@ class SeedCommand extends Command {
      */
     public function fire()
     {
-        if ( ! $this->confirmToProceed()) return;
+        if ( ! $this->confirmToProceed()) {
+            return;
+        }
 
         $this->prepareDatabase();
 
@@ -47,11 +59,12 @@ class SeedCommand extends Command {
         $pretend = $this->input->getOption('pretend');
 
         $path = database_path(config('smart-seeder.seedDir'));
-        $env = $this->option('env');
+        $env  = $this->option('env');
 
         $this->migrator->setEnv($env);
 
         $single = $this->option('file');
+
         if ($single) {
             $this->migrator->runSingleFile("$path/$single", $pretend);
         } else {
@@ -61,8 +74,7 @@ class SeedCommand extends Command {
         // Once the migrator has run we will grab the note output and send it out to
         // the console screen, since the migrator itself functions without having
         // any instances of the OutputInterface contract passed into the class.
-        foreach ($this->migrator->getNotes() as $note)
-        {
+        foreach ($this->migrator->getNotes() as $note) {
             $this->output->writeln($note);
         }
     }
@@ -76,9 +88,8 @@ class SeedCommand extends Command {
     {
         $this->migrator->setConnection($this->input->getOption('database'));
 
-        if ( ! $this->migrator->repositoryExists())
-        {
-            $options = array('--database' => $this->input->getOption('database'));
+        if ( ! $this->migrator->repositoryExists()) {
+            $options = ['--database' => $this->input->getOption('database')];
 
             $this->call('seed:install', $options);
         }
@@ -92,13 +103,12 @@ class SeedCommand extends Command {
      */
     protected function getOptions()
     {
-        return array(
-            array('env', null, InputOption::VALUE_OPTIONAL, 'The environment in which to run the seeds.', null),
-            array('database', null, InputOption::VALUE_OPTIONAL, 'The database connection to use.'),
-            array('file', null, InputOption::VALUE_OPTIONAL, 'Allows individual seed files to be run.', null),
-
-            array('force', null, InputOption::VALUE_NONE, 'Force the operation to run when in production.'),
-            array('pretend', null, InputOption::VALUE_NONE, 'Dump the SQL queries that would be run.'),
-        );
+        return [
+            ['env', null, InputOption::VALUE_OPTIONAL, 'The environment in which to run the seeds.', null],
+            ['database', null, InputOption::VALUE_OPTIONAL, 'The database connection to use.'],
+            ['file', null, InputOption::VALUE_OPTIONAL, 'Allows individual seed files to be run.', null],
+            ['force', null, InputOption::VALUE_NONE, 'Force the operation to run when in production.'],
+            ['pretend', null, InputOption::VALUE_NONE, 'Dump the SQL queries that would be run.'],
+        ];
     }
 }

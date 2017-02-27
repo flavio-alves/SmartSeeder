@@ -1,11 +1,17 @@
 <?php namespace Jlapp\SmartSeeder;
 
+use App;
 use Illuminate\Database\ConnectionResolverInterface as Resolver;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
 use Illuminate\Database\Schema\Blueprint;
-use App;
 
-class SmartSeederRepository implements MigrationRepositoryInterface {
+/**
+ * Class SmartSeederRepository
+ *
+ * @package Jlapp\SmartSeeder
+ */
+class SmartSeederRepository implements MigrationRepositoryInterface
+{
 
     /**
      * The database connection resolver instance.
@@ -43,7 +49,7 @@ class SmartSeederRepository implements MigrationRepositoryInterface {
      */
     public function __construct(Resolver $resolver, $table)
     {
-        $this->table = $table;
+        $this->table    = $table;
         $this->resolver = $resolver;
     }
 
@@ -52,7 +58,8 @@ class SmartSeederRepository implements MigrationRepositoryInterface {
      *
      * @param $env
      */
-    public function setEnv($env) {
+    public function setEnv($env)
+    {
         $this->env = $env;
     }
 
@@ -64,9 +71,11 @@ class SmartSeederRepository implements MigrationRepositoryInterface {
     public function getRan()
     {
         $env = $this->env;
+
         if (empty($env)) {
             $env = App::environment();
         }
+
         return $this->table()->where('env', '=', $env)->lists('seed');
     }
 
@@ -78,6 +87,7 @@ class SmartSeederRepository implements MigrationRepositoryInterface {
     public function getLast()
     {
         $env = $this->env;
+
         if (empty($env)) {
             $env = App::environment();
         }
@@ -90,17 +100,20 @@ class SmartSeederRepository implements MigrationRepositoryInterface {
     /**
      * Log that a migration was run.
      *
-     * @param  string  $file
-     * @param  int     $batch
+     * @param  string $file
+     * @param  int    $batch
+     *
      * @return void
      */
     public function log($file, $batch)
     {
         $env = $this->env;
+
         if (empty($env)) {
             $env = App::environment();
         }
-        $record = array('seed' => $file, 'env' => $env, 'batch' => $batch);
+
+        $record = ['seed' => $file, 'env' => $env, 'batch' => $batch];
 
         $this->table()->insert($record);
     }
@@ -115,9 +128,11 @@ class SmartSeederRepository implements MigrationRepositoryInterface {
     public function delete($seed)
     {
         $env = $this->env;
+
         if (empty($env)) {
             $env = App::environment();
         }
+
         $this->table()->where('env', '=', $env)->where('seed', $seed->seed)->delete();
     }
 
@@ -139,9 +154,11 @@ class SmartSeederRepository implements MigrationRepositoryInterface {
     public function getLastBatchNumber()
     {
         $env = $this->env;
+
         if (empty($env)) {
             $env = App::environment();
         }
+
         return $this->table()->where('env', '=', $env)->max('batch');
     }
 
@@ -154,8 +171,7 @@ class SmartSeederRepository implements MigrationRepositoryInterface {
     {
         $schema = $this->getConnection()->getSchemaBuilder();
 
-        $schema->create($this->table, function(Blueprint $table)
-        {
+        $schema->create($this->table, function (Blueprint $table) {
             // The migrations table is responsible for keeping track of which of the
             // migrations have actually run for the application. We'll create the
             // table to hold the migration file's path as well as the batch ID.
@@ -211,7 +227,8 @@ class SmartSeederRepository implements MigrationRepositoryInterface {
     /**
      * Set the information source to gather data.
      *
-     * @param  string  $name
+     * @param  string $name
+     *
      * @return void
      */
     public function setSource($name)
@@ -219,4 +236,17 @@ class SmartSeederRepository implements MigrationRepositoryInterface {
         $this->connection = $name;
     }
 
+    /**
+     * Get list of migrations.
+     *
+     * @param  int $steps
+     *
+     * @return array
+     */
+    public function getMigrations($steps)
+    {
+        $query = $this->table()->where('batch', '>=', '1');
+
+        return $query->orderBy('seed', 'desc')->take($steps)->get()->all();
+    }
 }
