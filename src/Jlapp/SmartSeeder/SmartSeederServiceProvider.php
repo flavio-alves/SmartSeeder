@@ -40,11 +40,11 @@ class SmartSeederServiceProvider extends ServiceProvider
             __DIR__ . '/../../config/smart-seeder.php', 'smart-seeder'
         );
 
-        App::bindShared('seed.repository', function ($app) {
+        $this->app->singleton('seed.repository', function ($app) {
             return new SmartSeederRepository($app['db'], config('smart-seeder.seedTable'));
         });
 
-        App::bindShared('seed.migrator', function ($app) {
+        $this->app->singleton('seed.migrator', function ($app) {
             return new SeedMigrator($app['seed.repository'], $app['db'], $app['files']);
         });
 
